@@ -560,15 +560,13 @@ namespace WeaponPaints
 			return !Utility.IsPlayerValid(player) ? null : player;
 		}
 
-		private static unsafe CBaseViewModel? GetPlayerViewModel(CCSPlayerController player)
-		{
-			if (player.PlayerPawn.Value == null || player.PlayerPawn.Value.ViewModelServices == null) return null;
-			CCSPlayer_ViewModelServices viewModelServices = new(player.PlayerPawn.Value.ViewModelServices!.Handle);
-			var ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
-			var references = MemoryMarshal.CreateSpan(ref ptr, 3);
-			var viewModel = (CHandle<CBaseViewModel>)Activator.CreateInstance(typeof(CHandle<CBaseViewModel>), references[0])!;
-			return viewModel.Value == null ? null : viewModel.Value;
-		}
+		private static CBaseViewModel? GetPlayerViewModel(CCSPlayerController player)
+{
+    if (player.PlayerPawn.Value?.ViewModelServices?.ViewModel == null) 
+        return null;
+        
+    return player.PlayerPawn.Value.ViewModelServices.ViewModel.Value;
+}
 
 		private static bool HasChangedKnife(CCSPlayerController player, out string? knifeValue)
 		{
